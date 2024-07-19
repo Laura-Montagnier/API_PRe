@@ -43,6 +43,8 @@ Cela permettra de la passer en argument à un réseau de neurones.
 
 ### Script
 
+Le script utilisé est représentation_grayscale.py. Il prend en argument un dossier d'exécutables et transforme chacun d'entre eux en grayscales.
+Il utilise un répertoire appelé images_intermédiaires qu'il faut supprimer ensuite (car il est inutile).
 
 
 ## Graphe d'entropie
