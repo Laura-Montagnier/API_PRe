@@ -18,12 +18,22 @@ cd ..
 
 # Les features PE_feats
 cd PE_feats
-touch ../Résultats/pe_feats.csv
+# Créer le fichier pe_feats.csv s'il n'existe pas
+output_file="../Résultats/pe_feats.csv"
+touch "$output_file"
+
+# Vérifier si le fichier est vide et ajouter l'en-tête si nécessaire
+if [ ! -s "$output_file" ]; then
+    echo "name,$(seq -s, 1 119 | sed 's/[0-9]\+/F&/g')" > "$output_file"
+fi
+
+# Exécuter pefeats pour chaque fichier dans le répertoire
 for filename in "$dir_path"/*
 do
-    ./pefeats "$filename" >> ../Résultats/pe_feats.csv
+    ./pefeats "$filename" >> "$output_file"
 done
-cd ..
+
+cd .
 
 # Supprimer le répertoire intermédiaire
 rm -r ~/API_PRe/API_Laura/image_intermediaire
