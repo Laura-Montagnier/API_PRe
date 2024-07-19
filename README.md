@@ -21,7 +21,9 @@ python3 représentation_ember.py Fichiers_exécutables
 
 ### Utiliser PE_feats
 
-Il suffit de télécharger l'exécutable pe_feats. Il a été fourni par Charles-Henry Bertrand van Ouytsel et al.
+Il suffit de télécharger l'exécutable pe_feats. Il a été utilisé dans le papier :
+
+Biondi, F., Enescu, M. A., Given-Wilson, T., Legay, A., Noureddine, L., & Verma, V. (2019). Effective, efficient, and robust packing detection and classification. Computers & Security, 85, 436-451.
 
 ### Extraire les features
 
@@ -30,3 +32,19 @@ On peut l'utiliser indépendamment en passant en argument le portable executable
 pe_feats notepad.exe
 
 Ce qui est print est la valeur des features. (On les enregistre dans un fichier csv grâce au script global d'extraction de features.)
+
+## Grayscale
+
+### Créer un grayscale
+
+Le principe est assez simple. On écrit le fichier binaire dans un csv, chaque octet dans une case. Puis, on transforme ce csv en une image de 250 pixels de large. 
+Chaque pixel est en échelle de gris, avec sa couleur déterminée par la valeur de l'octet. Ensuite, on retransforme les images en une image de 250 par 250 pixels.
+Cela permettra de la passer en argument à un réseau de neurones.
+
+### Script
+
+
+
+## Graphe d'entropie
+
+###
