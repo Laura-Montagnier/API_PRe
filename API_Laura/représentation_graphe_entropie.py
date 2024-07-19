@@ -39,7 +39,7 @@ def plot_entropies(entropies, output_path):
     plt.close()
 
 def main(folder_path):
-    output_dir = os.path.expanduser('~/API_Laura/Résultats/graphe_entropie')
+    output_dir = os.path.expanduser('~/API_PRe/API_Laura/Résultats/graphe_entropie')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 

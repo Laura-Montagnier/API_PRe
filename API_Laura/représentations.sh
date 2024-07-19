@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Définir le chemin vers le répertoire des exécutables
-dir_path="/root/API_Laura/Fichiers_exécutables/"
+# Chemin vers le répertoire des exécutables
+dir_path="/home/laura/API_PRe/API_Laura/Fichiers_exécutables/"
 
 # Exécuter le(s) script(s) Python
 
@@ -26,6 +26,6 @@ done
 cd ..
 
 # Supprimer le répertoire intermédiaire
-rm -r ~/API_Laura/Images_intermediaires
+rm -r ~/API_PRe/API_Laura/image_intermediaire
 
 echo "Représentations créées."
