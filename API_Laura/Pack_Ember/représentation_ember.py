@@ -11,17 +11,24 @@ def main(folder_path):
         print(f"Le dossier {folder_path} n'existe pas.")
         return
 
-    # Ouvrir le fichier CSV pour écriture
-    output_file = "../Résultats/Features_Ember.csv"
-    processed_files_list = "../Résultats/Processed_Files.txt"
+    # Chemin vers le fichier CSV
+    output_file = "../Résultats/ember.csv"
 
-    with open(output_file, "a") as f, open(processed_files_list, "a") as p:
+    # Fonction pour vérifier si le fichier est vide
+    def is_file_empty(file_path):
+        return os.path.exists(file_path) and os.stat(file_path).st_size == 0
+
+    # En-tête à ajouter si le fichier est vide
+    header = "name," + ",".join([f"F{i}" for i in range(1, 2352)]) + "\n"
+
+    with open(output_file, "a") as f:
+        # Si le fichier est vide, ajouter l'en-tête
+        if is_file_empty(output_file):
+            f.write(header)
+        
         for binary in os.listdir(folder_path):
             file_path = os.path.join(folder_path, binary)
-            #Ecrire le nom du fichier dans la liste
-            p.write(binary + "\n")
-
-
+            
             # Vérifier si le chemin est un fichier
             if os.path.isfile(file_path):
                 try:

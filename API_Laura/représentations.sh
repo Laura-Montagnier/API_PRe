@@ -9,7 +9,7 @@ dir_path="/root/API_Laura/Fichiers_exécutables/"
 python3 représentation_grayscale.py "$dir_path"
 
 #Les Graphes d'entropie
-python3 représentation_entropy_graph.py "$dir_path"
+python3 représentation_graphe_entropie.py "$dir_path"
 
 #Les features Ember
 cd Pack_Ember
