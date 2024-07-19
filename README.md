@@ -25,6 +25,10 @@ Il suffit de télécharger l'exécutable pe_feats. Il a été utilisé dans le p
 
 Biondi, F., Enescu, M. A., Given-Wilson, T., Legay, A., Noureddine, L., & Verma, V. (2019). Effective, efficient, and robust packing detection and classification. Computers & Security, 85, 436-451.
 
+Il faut lui donner la permission pour être exécutable :
+
+chmod +x ~/API_Laura/PE_feats/pefeats
+
 ### Extraire les features
 
 On peut l'utiliser indépendamment en passant en argument le portable executable.
