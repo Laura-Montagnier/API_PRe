@@ -5,32 +5,16 @@ import os
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 
+file_path = "/mnt/c/Users/monta/Desktop/BODMAS2/pe_feats.csv"
 
-file_path_1="~/Data/Benign/pe_feats.csv"
-file_path_2="~/Data/Malicious/pe_feats.csv"
-
-df_cleanware = pd.read_csv(file_path_1)
-df_malware = pd.read_csv(file_path_2)
-
+df = pd.read_csv(file_path)
 
 #On enlève les noms/les hashs
-df_cleanware = df_cleanware.drop(df_cleanware.columns[0], axis=1)
-df_malware = df_malware.drop(df_malware.columns[0], axis=1)
+df = df.drop(df.columns[1], axis=1)
 
 #On ajoute le nom des features
-first_row = [f'F{i}' for i in range(1, 120)]
-df_malware.columns = first_row
-first_row = [f'F{i}' for i in range(1, 120)]
-df_cleanware.columns = first_row
-
-
-#On ajoute les labels, 0 pour les cleanwares et 1 pour les malwares
-df_malware.insert(0, 'Label', 1)
-df_cleanware.insert(0, 'Label', 0)
-
-
-#On concatène verticalement en un seul Dataframe
-df = pd.concat([df_malware, df_cleanware], ignore_index=True)
+first_row = ['Label'] + [f'F{i}' for i in range(1, 120)]
+df.columns = first_row
 
 
 #On mélange (shuffle)
@@ -39,16 +23,16 @@ df = df.sample(frac=1).reset_index(drop=True)
 #On remplace les NaN par un zéro
 df = df.fillna(0)
 
-# Calculer le nombre de lignes pour 70%
+# Calculer le nombre de lignes pour 80%
 n = int(len(df) * 0.8)
 
-# Sélectionner les premiers 70%
+# Sélectionner les premiers 80%
 df_train = df.iloc[:n]
 
-# Calculer le nombre de lignes pour 30%
+# Calculer le nombre de lignes pour 20%
 m = int(len(df) * 0.2)
 
-# Sélectionner les derniers 30%
+# Sélectionner les derniers 20%
 df_test = df.iloc[-m:]
 
 
