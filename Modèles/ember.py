@@ -5,38 +5,26 @@ import os
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 
+print("1")
 
-file_path_1="~/Data/Benign/Features_Ember.csv"
-file_path_2="~/Data/Malicious/Features_Ember.csv"
+file_path = "/mnt/c/Users/monta/Desktop/BODMAS2/Features_Ember.csv"
 
-df_cleanware = pd.read_csv(file_path_1)
-df_malware = pd.read_csv(file_path_2)
-
-#print(df_cleanware.head())
-#print(df_malware.head())
+df = pd.read_csv(file_path)
 
 #On enlève les noms/les hashs
-df_cleanware = df_cleanware.drop(df_cleanware.columns[0], axis=1)
-df_malware = df_malware.drop(df_malware.columns[0], axis=1)
+df = df.drop(df.columns[1], axis=1)
+
+#On enlève notepad
+df = df.iloc[1:].reset_index(drop=True)
 
 #On ajoute le nom des features
-first_row = [f'F{i}' for i in range(1, 2352)]
-df_malware.columns = first_row
-first_row = [f'F{i}' for i in range(1, 2352)]
-df_cleanware.columns = first_row
-
-
-#On ajoute les labels, 0 pour les cleanwares et 1 pour les malwares
-df_malware.insert(0, 'Label', 1)
-df_cleanware.insert(0, 'Label', 0)
-
-
-#On concatène verticalement en un seul Dataframe
-df = pd.concat([df_malware, df_cleanware], ignore_index=True)
-
-
+first_row = ['Label'] + [f'F{i}' for i in range(1, 2351)]
+df.columns = first_row
+ 
 #On mélange (shuffle)
 df = df.sample(frac=1).reset_index(drop=True)
+
+print("2")
 
 #On remplace les NaN par un zéro
 df = df.fillna(0)
@@ -53,12 +41,15 @@ m = int(len(df) * 0.2)
 # Sélectionner les derniers 30%
 df_test = df.iloc[-m:]
 
+print("3")
 
 X_train = df_train.drop('Label', axis=1)
 y_train = df_train['Label']
 
 X_test = df_test.drop('Label', axis=1)
 y_test = df_test['Label']
+
+print("4")
 
 #print(X_test)
 #print(y_test)
@@ -79,7 +70,11 @@ y_test = y_test.drop(indices_to_remove)
 
 #Création et entraînement du modèle
 
+print("5")
+
 GB_model = GradientBoostingClassifier(n_estimators=20, max_depth=5, learning_rate=0.2, min_samples_leaf=20, random_state=42)
+
+print("6")
 
 GB_model.fit(X_train, y_train)
 
