@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Définir le chemin vers le répertoire des exécutables
-dir_path="/root/API_Laura/Fichiers_exécutables/"
+dir_path="/home/laura/API_PRe/API_Laura/Fichiers_exécutables/"
 
 # Exécuter le script Python pour les Grayscales avec le chemin en argument
 python3 représentation_grayscale.py "$dir_path"
@@ -16,19 +16,19 @@ import torch.nn as nn
 from PIL import Image
 import torch.nn.functional as F
 import sys
-sys.path.append('/root/Modèles')
+sys.path.append('/home/laura/API_PRe/Modèles')
 from convnet import Convnet
 
 
 # Chemin complet vers le modèle .pkl
-model_path = '/root/Modèles/cnn_model_grayscale.pkl'
+model_path = '/home/laura/API_PRe/Modèles/cnn_model_grayscale.pkl'
 
 # Charger le modèle
 with open(model_path, 'rb') as file:
 	cnn_model_grayscale = pickle.load(file)
 
 # Chemin complet vers le répertoire contenant les fichiers Grayscales
-grayscales_dir = "/root/API_Laura/Résultats/Images_Grayscale"
+grayscales_dir = "/home/laura/API_PRe/API_Laura/Résultats/grayscale"
 
 # Parcourir les fichiers dans le répertoire Grayscales
 for filename in os.listdir(grayscales_dir):
@@ -56,7 +56,7 @@ for filename in os.listdir(grayscales_dir):
 		print(f"Probabilities: {probabilities.cpu().numpy()}")
 		if probabilities.cpu().numpy()[0][0]==1:
 			print("Le Grayscale suffit !")
-		print(f"Predicted class index for {filename}: {idx}")
+		print(f"Index de la classe prédite pour {filename}: {idx}")
 
 
 # Supposons que 'ma_variable' contienne la valeur que vous souhaitez récupérer
@@ -75,8 +75,10 @@ valeur_recuperee=$(< mon_fichier.txt)
 
 rm mon_fichier.txt
 
+echo "Les prédictions avec les grayscales sont terminées."
+
 # Exécuter le script Python pour les Graphes d'entropie avec le chemin en argument
-python3 représentation_entropy_graph.py "$dir_path"
+python3 représentation_graphe_entropie.py "$dir_path"
 
 # Charger le modèle à partir du fichier .pkl
 python3 << END
@@ -88,28 +90,28 @@ import torch.nn as nn
 from PIL import Image
 import torch.nn.functional as F
 import sys
-sys.path.append('/root/Modèles')
+sys.path.append('/home/laura/API_PRe/Modèles/')
 from convnet import Convnet
 
 
 # Chemin complet vers le modèle .pkl
-model_path = '/root/Modèles/cnn_model_entropie.pkl'
+model_path = '/home/laura/API_PRe/Modèles/cnn_model_entropy.pkl'
 
 # Charger le modèle
 
 with open(model_path, 'rb') as file:
          cnn_model_entropy = pickle.load(file)
 
-# Chemin complet vers le répertoire contenant les fichiers Grayscales
-entropy_dir = "/root/API_Laura/Résultats/Graphes_entropie"
+# Chemin complet vers le répertoire contenant les fichiers Graphes d'entropie
+entropy_dir = "/home/laura/API_PRe/API_Laura/Résultats/graphe_entropie"
 
-#On va parcourir les fichiers dans le répertoire Grayscales
+#On va parcourir les fichiers dans le répertoire Graphes d'entropie
 for filename in os.listdir(entropy_dir):
 	file_path = os.path.join(entropy_dir, filename)
 
 	# Charger les données à partir du fichier
 	image = Image.open(file_path).convert('L')  # Convertir en niveaux de gris
-	image = image.resize((250,250))
+	image = image.resize((128,128))
 	data = np.array(image)
 	
 	data = data.reshape(1, 1, data.shape[0], data.shape[1])
@@ -152,7 +154,6 @@ touch ../Résultats/pe_feats.csv
 for filename in "$dir_path"/*
 	do
 	./pefeats "$filename" >> ../Résultats/pe_feats.csv
-	./pefeats "$filename" >> ../Résultats/pe_feats.csv
 	done
 cd ..
 
@@ -162,10 +163,10 @@ from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 
 # Chemin complet vers le csv contenant les features PE_feats
-pe_feats_file = "/root/API_Laura/Résultats/pe_feats.csv"
+pe_feats_file = "/home/laura/API_PRe/API_Laura/Résultats/pe_feats.csv"
 
 # Chemin complet vers le modèle .pkl
-model_path = '/root/Modèles/GB_model_pe_feats.pkl'
+model_path = '/home/laura/API_PRe/Modèles/GB_model_pe_feats.pkl'
 
 # Charger le modèle
 
@@ -195,7 +196,7 @@ print("Selon PE_feats, les probabilités de prédiction sont :")
 # Faire des prédictions avec les probabilités
 predictions_proba = GB_model_pe_feats.predict_proba(features_pe_feats)
 
-u = max(predictions_proba[0][1],predictions_proba[0][0])
+u = max(predictions_proba[0][0],predictions_proba[0][1],predictions_proba[0][2],predictions_proba[0][3],predictions_proba[0][4],predictions_proba[0][5],predictions_proba[0][6],predictions_proba[0][7],predictions_proba[0][8],predictions_proba[0][9],predictions_proba[0][10],predictions_proba[0][11],predictions_proba[0][12],predictions_proba[0][13])
 print(u)
 
 ma_variable=str(u)
@@ -215,7 +216,6 @@ rm mon_fichier.txt
 #Les features Ember
 cd Pack_Ember
 python3 représentation_ember.py "$dir_path"
-python3 représentation_ember.py "$dir_path"
 cd ..
 
 python3 << END
@@ -225,10 +225,10 @@ from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 
 # Chemin complet vers le csv contenant les features Ember
-ember_file = "/root/API_Laura/Résultats/Features_Ember.csv"
+ember_file = "/API_PRe/API_Laura/Résultats/Features_Ember.csv"
 
 # Chemin complet vers le modèle .pkl
-model_path = '/root/Modèles/GB_model_ember.pkl'
+model_path = '/API_PRe/Modèles/GB_model_ember.pkl'
 
 # Charger le modèle
 
