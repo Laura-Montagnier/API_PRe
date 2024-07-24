@@ -22,7 +22,11 @@ df = df.reset_index()
 first_row = ['Label'] + [f'F{i}' for i in range(1, 2352)]
 df.columns = first_row
 
- 
+# Imprimer les labels avant le shuffle
+labels_before_shuffle = df['Label'].unique()
+print("Labels before shuffle:", labels_before_shuffle) 
+
+
 #On mélange (shuffle)
 df = df.sample(frac=1).reset_index(drop=True)
 
