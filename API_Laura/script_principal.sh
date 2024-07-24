@@ -154,6 +154,7 @@ touch ../Résultats/pe_feats.csv
 for filename in "$dir_path"/*
 	do
 	./pefeats "$filename" >> ../Résultats/pe_feats.csv
+	./pefeats "$filename" >> ../Résultats/pe_feats.csv
 	done
 cd ..
 
@@ -225,10 +226,10 @@ from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 
 # Chemin complet vers le csv contenant les features Ember
-ember_file = "/API_PRe/API_Laura/Résultats/Features_Ember.csv"
+ember_file = "/home/laura/API_PRe/API_Laura/Résultats/ember.csv"
 
 # Chemin complet vers le modèle .pkl
-model_path = '/API_PRe/Modèles/GB_model_ember.pkl'
+model_path = '/home/laura/API_PRe/Modèles/GB_model_ember.pkl'
 
 # Charger le modèle
 
