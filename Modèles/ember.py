@@ -5,26 +5,27 @@ import os
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 
-print("1")
 
 file_path = "/mnt/c/Users/monta/Desktop/BODMAS2/Features_Ember.csv"
 
 df = pd.read_csv(file_path)
 
-#On enlève les noms/les hashs
-df = df.drop(df.columns[1], axis=1)
 
-#On enlève notepad
-df = df.iloc[1:].reset_index(drop=True)
+#On enlève les noms/les hashs
+df = df.drop(df.columns[0], axis=1)
+
+# Réinitialiser l'index pour récupérer la colonne
+df = df.reset_index()
+
 
 #On ajoute le nom des features
-first_row = ['Label'] + [f'F{i}' for i in range(1, 2351)]
+first_row = ['Label'] + [f'F{i}' for i in range(1, 2352)]
 df.columns = first_row
+
  
 #On mélange (shuffle)
 df = df.sample(frac=1).reset_index(drop=True)
 
-print("2")
 
 #On remplace les NaN par un zéro
 df = df.fillna(0)
@@ -41,7 +42,6 @@ m = int(len(df) * 0.2)
 # Sélectionner les derniers 30%
 df_test = df.iloc[-m:]
 
-print("3")
 
 X_train = df_train.drop('Label', axis=1)
 y_train = df_train['Label']
@@ -49,10 +49,9 @@ y_train = df_train['Label']
 X_test = df_test.drop('Label', axis=1)
 y_test = df_test['Label']
 
-print("4")
 
-#print(X_test)
-#print(y_test)
+print(X_test)
+print(y_test)
 
 # Recherche des indices où y_train est None
 indices_to_remove = y_train.index[y_train.isnull()]
@@ -70,11 +69,9 @@ y_test = y_test.drop(indices_to_remove)
 
 #Création et entraînement du modèle
 
-print("5")
 
 GB_model = GradientBoostingClassifier(n_estimators=20, max_depth=5, learning_rate=0.2, min_samples_leaf=20, random_state=42)
 
-print("6")
 
 GB_model.fit(X_train, y_train)
 

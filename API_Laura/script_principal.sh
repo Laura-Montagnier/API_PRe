@@ -196,7 +196,7 @@ print("Selon PE_feats, les probabilités de prédiction sont :")
 # Faire des prédictions avec les probabilités
 predictions_proba = GB_model_pe_feats.predict_proba(features_pe_feats)
 
-u = max(predictions_proba[0][0],predictions_proba[0][1],predictions_proba[0][2],predictions_proba[0][3],predictions_proba[0][4],predictions_proba[0][5],predictions_proba[0][6],predictions_proba[0][7],predictions_proba[0][8],predictions_proba[0][9],predictions_proba[0][10],predictions_proba[0][11],predictions_proba[0][12],predictions_proba[0][13])
+u = max(predictions_proba[0][0],predictions_proba[0][1],predictions_proba[0][2],predictions_proba[0][3],predictions_proba[0][4],predictions_proba[0][5],predictions_proba[0][6],predictions_proba[0][7],predictions_proba[0][8],predictions_proba[0][9],predictions_proba[0][10],predictions_proba[0][11],predictions_proba[0][12],predictions_proba[0][12])
 print(u)
 
 ma_variable=str(u)
