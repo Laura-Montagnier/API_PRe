@@ -57,10 +57,10 @@ try:
                     print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
                     print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
-					ma_variable = str(probabilities.cpu().numpy()[0][0])
+                    ma_variable = str(max(probabilities))
 		
-					with open('mon_fichier.txt', 'w') as f:
-						f.write(ma_variable)
+                    with open('mon_fichier.txt', 'w') as f:
+                        f.write(ma_variable)
 
                 except Exception as e:
                     print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
@@ -72,6 +72,21 @@ except Exception as e:
 
 
 END
+
+valeur_recuperee=$(< mon_fichier.txt)
+
+# Convertir la valeur en nombre à virgule flottante
+valeur_recuperee_float=$(printf "%.2f" "$valeur_recuperee")
+
+echo $valeur_recuperee_float
+
+if [ 1 -eq "$(echo "$valeur_recuperee_float >= 0.9" | bc)" ]; then
+    echo "La représentation en Grayscale est suffisante."
+    rm mon_fichier.txt
+    exit 0
+fi
+
+rm mon_fichier.txt
 
 
 echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
