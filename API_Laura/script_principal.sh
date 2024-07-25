@@ -2,81 +2,77 @@
 
 # Définir le chemin vers le répertoire des exécutables
 dir_path="/home/laura/API_PRe/API_Laura/Fichiers_exécutables/"
+model_path="/home/laura/API_PRe/Modèles/grayscale_model.h5"
 
 # Exécuter le script Python pour les Grayscales avec le chemin en argument
 python3 représentation_grayscale.py "$dir_path"
 
-# Charger le modèle à partir du fichier .pkl
 python3 << END
-import pickle
-import numpy as np
 import os
-import torch
-import torch.nn as nn
-from PIL import Image
-import torch.nn.functional as F
-import sys
-sys.path.append('/home/laura/API_PRe/Modèles')
-from convnet import Convnet
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
+
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+
 
 Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
 
-# Chemin complet vers le modèle .pkl
-model_path = '/home/laura/API_PRe/Modèles/cnn_model_grayscale.pkl'
+def preprocess_image(img_path, image_size):
+    try:
+        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
+        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
+        img_array /= 255.0  # Normaliser l'image
+        return img_array
+    except Exception as e:
+        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        return None
 
-# Charger le modèle
-with open(model_path, 'rb') as file:
-	cnn_model_grayscale = pickle.load(file)
+try:
+    model = tf.keras.models.load_model('/home/laura/API_PRe/Modèles/grayscale_model.h5')
+except Exception as e:
+    print(f"Erreur lors du chargement du modèle: {e}")
+    exit(1)
 
-# Chemin complet vers le répertoire contenant les fichiers Grayscales
-grayscales_dir = "/home/laura/API_PRe/API_Laura/Résultats/grayscale"
-
-# Parcourir les fichiers dans le répertoire Grayscales
-for filename in os.listdir(grayscales_dir):
-	file_path = os.path.join(grayscales_dir, filename)
-        
-	# Charger les données à partir du fichier
-	image = Image.open(file_path).convert('L')  # Convertir en niveaux de gris
-	data = np.array(image)
-        
-	# Reshape the data to match the input shape of the model
-	data = data.reshape(1, 1, data.shape[0], data.shape[1])
-	data = torch.tensor(data, dtype=torch.float32)
-
-	# Faire des prédictions avec le modèle
-	cnn_model_grayscale.eval()  # Mettre le modèle en mode évaluation
-
-	with torch.no_grad():
-		# Obtenir les sorties brutes du modèle
-		outputs = cnn_model_grayscale(data)
-		# Appliquer la fonction softmax pour obtenir les probabilités
-		probabilities = F.softmax(outputs, dim=1)
-		# Obtenir l'indice de la classe prédite
-		idx = probabilities.argmax(axis=1).cpu().numpy()[0]
-		# Afficher les probabilités et la prédiction
-		print(f"La probabilité de prédiction est de : {probabilities.cpu().numpy()[0][0]}")
-		if probabilities.cpu().numpy()[0][0]==1:
-			print("Le Grayscale suffit.")
-		print(f"Index de la classe prédite pour {filename}: {Labels[idx]}")
+dir_path = '/home/laura/API_PRe/API_Laura/Résultats/grayscale'
+image_size = (180, 180)
 
 
-# Supposons que 'ma_variable' contienne la valeur que vous souhaitez récupérer
-		ma_variable = str(probabilities.cpu().numpy()[0][0])
+try:
+    for filename in os.listdir(dir_path):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
+            img_path = os.path.join(dir_path, filename)
+            
+            img_array = preprocess_image(img_path, image_size)
+            if img_array is not None:
+                try:
+                    predictions = model.predict(img_array)
+                    predicted_class = np.argmax(predictions, axis=1)
+                    probabilities = predictions[0]
+                    
+                    
+                    print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
+                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
-# Écriture de la valeur dans un fichier
-		with open('mon_fichier.txt', 'w') as f:
-			f.write(ma_variable)
+					ma_variable = str(probabilities.cpu().numpy()[0][0])
+		
+					with open('mon_fichier.txt', 'w') as f:
+						f.write(ma_variable)
+
+                except Exception as e:
+                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+            else:
+                print(f"Erreur lors du prétraitement de l'image {filename}")
+except Exception as e:
+    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+
+
+
 END
 
-valeur_recuperee=$(< mon_fichier.txt)
-
-if [ "$valeur_recuperee" == "1.0" ]; then
-	echo "Fin du script"
-	rm mon_fichier.txt
-	exit 0
-fi
-
-rm mon_fichier.txt
 
 echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 

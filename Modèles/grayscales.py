@@ -5,6 +5,7 @@ import cv2
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import numpy as np
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
@@ -23,6 +24,7 @@ idx_labels = [label_to_idx[label] for label in labels]
 # 3. Diviser les données en ensembles d'entraînement, de validation et de test
 images_tv, images_test, y_tv, y_test = train_test_split(image_paths, idx_labels, shuffle=True, test_size=0.2, random_state=123)
 images_train, images_val, y_train, y_val = train_test_split(images_tv, y_tv, shuffle=True, test_size=0.25, random_state=123)
+
 
 class CT_Dataset(Dataset):
     def __init__(self, img_path, img_labels, img_transforms=None, grayscale=True):
