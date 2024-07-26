@@ -94,78 +94,89 @@ echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 # Exécuter le script Python pour les Graphes d'entropie avec le chemin en argument
 python3 représentation_graphe_entropie.py "$dir_path"
 
-# Charger le modèle à partir du fichier .pkl
 python3 << END
-import pickle
-import numpy as np
 import os
-import torch
-import torch.nn as nn
-from PIL import Image
-import torch.nn.functional as F
-import sys
-sys.path.append('/home/laura/API_PRe/Modèles/')
-from convnet import Convnet
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
+
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+
 
 Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
 
-# Chemin complet vers le modèle .pkl
-model_path = '/home/laura/API_PRe/Modèles/cnn_model_entropy.pkl'
+def preprocess_image(img_path, image_size):
+    try:
+        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
+        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
+        img_array /= 255.0  # Normaliser l'image
+        return img_array
+    except Exception as e:
+        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        return None
 
-# Charger le modèle
+try:
+    model = tf.keras.models.load_model('/home/laura/API_PRe/Modèles/entropie_model.h5')
+except Exception as e:
+    print(f"Erreur lors du chargement du modèle: {e}")
+    exit(1)
 
-with open(model_path, 'rb') as file:
-         cnn_model_entropy = pickle.load(file)
+dir_path = '/home/laura/API_PRe/API_Laura/Résultats/graphe_entropie'
+image_size = (180, 180)
 
-# Chemin complet vers le répertoire contenant les fichiers Graphes d'entropie
-entropy_dir = "/home/laura/API_PRe/API_Laura/Résultats/graphe_entropie"
 
-#On va parcourir les fichiers dans le répertoire Graphes d'entropie
-for filename in os.listdir(entropy_dir):
-	file_path = os.path.join(entropy_dir, filename)
+try:
+    for filename in os.listdir(dir_path):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
+            img_path = os.path.join(dir_path, filename)
+            
+            img_array = preprocess_image(img_path, image_size)
+            if img_array is not None:
+                try:
+                    predictions = model.predict(img_array)
+                    predicted_class = np.argmax(predictions, axis=1)
+                    probabilities = predictions[0]
+                    
+                    
+                    print(f"Classe prédite avec la représentation en Graphe d'entropie : {Labels[predicted_class[0]]}")
+                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
-	# Charger les données à partir du fichier
-	image = Image.open(file_path).convert('L')  # Convertir en niveaux de gris
-	image = image.resize((128,128))
-	data = np.array(image)
-	
-	data = data.reshape(1, 1, data.shape[0], data.shape[1])
-	data = torch.tensor(data, dtype=torch.float32)
-	
-	# Faire des prédictions avec le modèle
-	cnn_model_entropy.eval()  # Mettre le modèle en mode évaluation
-
-	with torch.no_grad():
-                # Obtenir les sorties brutes du modèle
-		outputs = cnn_model_entropy(data)
-		# Appliquer la fonction softmax pour obtenir les probabilités
-		probabilities = F.softmax(outputs, dim=1)
-		# Obtenir l'indice de la classe prédite
-		idx = probabilities.argmax(axis=1).cpu().numpy()[0]
-		# Afficher les probabilités et la prédiction
-		print(f"La probabilité de prédiction est de : {probabilities.cpu().numpy()[0][0]}")
-		if probabilities.cpu().numpy()[0][0]==1:
-			print("Le Graphe d'entropie suffit.")
-		print(f"Predicted class index for {filename}: {Labels[idx]}")
+                    ma_variable = str(max(probabilities))
 		
-		ma_variable = str(probabilities.cpu().numpy()[0][0])
-		
-		with open('mon_fichier.txt', 'w') as f:
-			f.write(ma_variable)
+                    with open('mon_fichier.txt', 'w') as f:
+                        f.write(ma_variable)
+
+                except Exception as e:
+                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+            else:
+                print(f"Erreur lors du prétraitement de l'image {filename}")
+except Exception as e:
+    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+
+
 
 END
 
 valeur_recuperee=$(< mon_fichier.txt)
 
-if [ "$valeur_recuperee" == "1.0" ]; then
-	echo "Fin du script"
-	rm mon_fichier.txt
-	exit 0
+# Convertir la valeur en nombre à virgule flottante
+valeur_recuperee_float=$(printf "%.2f" "$valeur_recuperee")
+
+echo $valeur_recuperee_float
+
+if [ 1 -eq "$(echo "$valeur_recuperee_float >= 0.9" | bc)" ]; then
+    echo "La représentation en Graphe d'entropie est suffisante."
+    rm mon_fichier.txt
+    exit 0
 fi
 
 rm mon_fichier.txt
 
-echo "Les prédictions avec les graphes d'entropie n'étaient pas suffisantes."
+
+echo "Les prédictions avec le graphe d'entropie n'étaient pas suffisantes."
 
 header="Label,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22,F23,F24,F25,F26,F27,F28,F29,F30,F31,F32,F33,F34,F35,F36,F37,F38,F39,F40,F41,F42,F43,F44,F45,F46,F47,F48,F49,F50,F51,F52,F53,F54,F55,F56,F57,F58,F59,F60,F61,F62,F63,F64,F65,F66,F67,F68,F69,F70,F71,F72,F73,F74,F75,F76,F77,F78,F79,F80,F81,F82,F83,F84,F85,F86,F87,F88,F89,F90,F91,F92,F93,F94,F95,F96,F97,F98,F99,F100,F101,F102,F103,F104,F105,F106,F107,F108,F109,F110,F111,F112,F113,F114,F115,F116,F117,F118,F119"
 
