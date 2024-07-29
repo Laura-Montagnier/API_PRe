@@ -178,7 +178,7 @@ end_time=$(date +%s)
 execution_time=$((end_time - start_time))
 
 # Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour PE_feats."
+echo "Le script a pris $execution_time secondes pour Ember."
 
 valeur_recuperee=$(< mon_fichier.txt)
 
