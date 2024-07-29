@@ -3,6 +3,7 @@ import csv
 from PIL import Image
 import os
 import argparse
+import shutil
 
 # Première étape, transformer le binaire en csv : on a une fonction spécifique
 def convert_to_csv(input_file, output_file):
@@ -100,6 +101,9 @@ def main(exe_dir):
             except Exception as e:
                 print(f"Erreur lors du redimensionnement de l'image {filename}: {str(e)}")
 
+    # Supprimer le répertoire intermédiaire et tout son contenu
+    shutil.rmtree(interm_dir)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process executable files to images.')
     parser.add_argument('exe_dir', type=str, help='Directory containing the executable files.')
@@ -108,4 +112,3 @@ if __name__ == "__main__":
 
     # Convert executable files to images
     main(args.exe_dir)
-
