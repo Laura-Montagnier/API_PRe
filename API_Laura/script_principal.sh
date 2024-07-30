@@ -5,8 +5,7 @@ echo "Entrez le seuil de confiance désiré (entre 0 et 1):"
 read seuil_de_confiance
 
 # Définir le chemin vers le répertoire des exécutables
-dir_path="/home/laura/API_PRe/API_Laura/Fichiers_exécutables/"
-model_path="/home/laura/API_PRe/Modèles/grayscale_model.h5"
+dir_path1="../Fichiers_exécutables"
 results_dir="../Résultats"
 
 ###PE_feats
@@ -32,7 +31,7 @@ if [ ! -s "$output_file" ]; then
     echo "$header" > "$output_file"
 fi
 
-for filename in "$dir_path"/*
+for filename in "$dir_path1"/*
 	do
 	./pefeats "$filename" >> ../Résultats/pe_feats.csv
 	done
@@ -44,10 +43,10 @@ from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 
 # Chemin complet vers le csv contenant les features PE_feats
-pe_feats_file = "/home/laura/API_PRe/API_Laura/Résultats/pe_feats.csv"
+pe_feats_file = "./Résultats/pe_feats.csv"
 
 # Chemin complet vers le modèle .pkl
-model_path = '/home/laura/API_PRe/Modèles/GB_model_pe_feats.pkl'
+model_path = './../Modèles/GB_model_pe_feats.pkl'
 
 # Charger le modèle
 
@@ -118,9 +117,11 @@ echo "Les prédictions avec les pe_feats n'étaient pas suffisantes."
 # Commence à mesurer le temps pour Ember
 start_time=$(date +%s)
 
+dir_path1="../Fichiers_exécutables"
+
 #Les features Ember
 cd Pack_Ember
-python3 représentation_ember.py "$dir_path"
+python3 représentation_ember.py "$dir_path1"
 cd ..
 
 python3 << END
@@ -130,10 +131,10 @@ from sklearn.ensemble import GradientBoostingClassifier
 import pandas as pd
 
 # Chemin complet vers le csv contenant les features Ember
-ember_file = "/home/laura/API_PRe/API_Laura/Résultats/ember.csv"
+ember_file = "./Résultats/ember.csv"
 
 # Chemin complet vers le modèle .pkl
-model_path = '/home/laura/API_PRe/Modèles/GB_model_ember.pkl'
+model_path = './../Modèles/GB_model_ember.pkl'
 
 # Charger le modèle
 
@@ -200,11 +201,14 @@ echo "Les prédictions avec Ember n'étaient pas suffisantes."
 
 ###GRAYSCALE
 
+# Définir le chemin vers le répertoire des exécutables
+dir_path2="./Fichiers_exécutables"
+
 # Commence à mesurer le temps pour les Grayscales
 start_time=$(date +%s)
 
 # Exécuter le script Python pour les Grayscales avec le chemin en argument
-python3 représentation_grayscale.py "$dir_path"
+python3 représentation_grayscale.py "$dir_path2"
 
 python3 << END
 import os
@@ -215,7 +219,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-
+model_path='./../Modèles/grayscale_model.h5'
 
 Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
 
@@ -231,12 +235,12 @@ def preprocess_image(img_path, image_size):
         return None
 
 try:
-    model = tf.keras.models.load_model('/home/laura/API_PRe/Modèles/grayscale_model.h5')
+    model = tf.keras.models.load_model(model_path)
 except Exception as e:
     print(f"Erreur lors du chargement du modèle: {e}")
     exit(1)
 
-dir_path = '/home/laura/API_PRe/API_Laura/Résultats/grayscale'
+dir_path = './Résultats/grayscale'
 image_size = (180, 180)
 
 
@@ -263,13 +267,12 @@ try:
 
                 except Exception as e:
                     print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+
             else:
                 print(f"Erreur lors du prétraitement de l'image {filename}")
+
 except Exception as e:
     print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
-
-
-
 END
 
 # Arrête de mesurer le temps
@@ -309,7 +312,7 @@ echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 start_time=$(date +%s)
 
 # Exécuter le script Python pour les Graphes d'entropie avec le chemin en argument
-python3 représentation_graphe_entropie.py "$dir_path"
+python3 représentation_graphe_entropie.py "$dir_path2"
 
 python3 << END
 import os
@@ -336,12 +339,12 @@ def preprocess_image(img_path, image_size):
         return None
 
 try:
-    model = tf.keras.models.load_model('/home/laura/API_PRe/Modèles/entropie_model.h5')
+    model = tf.keras.models.load_model('./../Modèles/entropie_model.h5')
 except Exception as e:
     print(f"Erreur lors du chargement du modèle: {e}")
     exit(1)
 
-dir_path = '/home/laura/API_PRe/API_Laura/Résultats/graphe_entropie'
+dir_path = './Résultats/graphe_entropie'
 image_size = (180, 180)
 
 
