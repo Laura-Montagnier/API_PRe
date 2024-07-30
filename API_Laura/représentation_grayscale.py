@@ -44,8 +44,8 @@ def csv_to_image(input_file, output_file):
 # Fonction principale
 def main(exe_dir):
     # Définir les répertoires intermédiaires et de sortie
-    interm_dir = os.path.expanduser('~/API_PRe/API_Laura/image_intermediaire')
-    output_dir = os.path.expanduser('~/API_PRe/API_Laura/Résultats/grayscale')
+    interm_dir = os.path.expanduser('~/API_Laura/image_intermediaire')
+    output_dir = os.path.expanduser('~/API_Laura/Résultats/grayscale')
 
     # Vérifier si le répertoire existe
     if not os.path.exists(exe_dir):
