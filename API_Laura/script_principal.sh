@@ -360,7 +360,7 @@ try:
                     probabilities = predictions[0]
                     
                     
-                    print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
+                    print(f"Classe prédite avec la représentation en couleur : {Labels[predicted_class[0]]}")
                     print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
                     ma_variable = str(max(probabilities))
