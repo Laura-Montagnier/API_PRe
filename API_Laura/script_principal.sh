@@ -302,6 +302,108 @@ rm mon_fichier.txt
 echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 
 
+###IMAGES EN COULEUR
+
+# Définir le chemin vers le répertoire des exécutables
+dir_path2="./Fichiers_exécutables"
+
+# Commence à mesurer le temps pour les Grayscales
+start_time=$(date +%s)
+
+# Exécuter le script Python pour les Grayscales avec le chemin en argument
+python3 représentation_couleur.py "$dir_path2"
+
+python3 << END
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
+
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+model_path='./../Modèles/couleur_model.h5'
+
+Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
+
+def preprocess_image(img_path, image_size):
+    try:
+        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
+        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
+        img_array /= 255.0  # Normaliser l'image
+        return img_array
+    except Exception as e:
+        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        return None
+
+try:
+    model = tf.keras.models.load_model(model_path)
+except Exception as e:
+    print(f"Erreur lors du chargement du modèle: {e}")
+    exit(1)
+
+dir_path = './Résultats/couleur'
+image_size = (180, 180)
+
+
+try:
+    for filename in os.listdir(dir_path):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
+            img_path = os.path.join(dir_path, filename)
+            
+            img_array = preprocess_image(img_path, image_size)
+            if img_array is not None:
+                try:
+                    predictions = model.predict(img_array)
+                    predicted_class = np.argmax(predictions, axis=1)
+                    probabilities = predictions[0]
+                    
+                    
+                    print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
+                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
+
+                    ma_variable = str(max(probabilities))
+		
+                    with open('mon_fichier.txt', 'w') as f:
+                        f.write(ma_variable)
+
+                except Exception as e:
+                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+
+            else:
+                print(f"Erreur lors du prétraitement de l'image {filename}")
+
+except Exception as e:
+    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+END
+
+# Arrête de mesurer le temps
+end_time=$(date +%s)
+
+# Calcule la durée d'exécution
+execution_time=$((end_time - start_time))
+
+# Affiche le temps d'exécution
+echo "Le script a pris $execution_time secondes pour les images en couleur."
+
+valeur_recuperee=$(< mon_fichier.txt)
+
+# Convertir la valeur en nombre à virgule flottante
+valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
+
+
+if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
+    echo "La représentation en couleur est suffisante."
+    rm mon_fichier.txt
+    exit 0
+fi
+
+rm mon_fichier.txt
+
+
+echo "Les prédictions avec les couleurs n'étaient pas suffisantes."
+
 
 
 
