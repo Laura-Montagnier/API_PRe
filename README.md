@@ -1,4 +1,45 @@
-# Comment les représentations sont-elles fabriquées ?
+# PREMIER SCRIPT : représentations.sh
+
+## Description
+
+Ce script permet de créer différentes représentations de fichiers exécutables (EXE). Elle génère plusieurs types de features et les enregistre dans le dossier `Résultats`.
+
+## Instructions
+
+### 1. Placer les fichiers exécutables
+
+Placez les fichiers exécutables dans le répertoire `Fichiers_Exécutables`.
+
+### 2. Adapter ember 
+
+pip install -r requirements.txt
+
+python3 setup.py install
+
+### 3. Installer LEAF
+
+Installer la version 14 de Leaf.
+
+### 3. Rendre le script exécutable
+
+Ouvrez un terminal et rendez le script `représentations.sh` exécutable en entrant la commande suivante :
+
+chmod +x représentations.sh
+
+### 4. Exécuter le script
+
+./représentations.sh
+
+## Résultats
+
+Les différents types de features sont présents dans le dossier "Résultats".
+
+## Références
+
+Pour le Pack_EMBER : https://github.com/elastic/ember
+Pour PE_Feats : Charles-Henry Bertrand van Ouytsel et al.
+
+# APARTE : Comment les représentations sont-elles fabriquées ?
 
 ## Ember
 
@@ -53,4 +94,37 @@ Il utilise un répertoire appelé images_intermédiaires qu'il faut supprimer en
 
 ## Graphe d'entropie
 
-###
+### Créer le graphe d'entropie 
+
+On calcule la fréquence de chaque valeur de byte. Ainsi, on peut calculer l'entropie de chaque byte. On trace cette entropie en fonction de la valeur du byte, ce qui donne un graphe.
+
+### Script
+
+Le script utilisé est représentation_graphe_entropie.py. Il prend en argument un dossier d'exécutables et trace pour chacun d'entre eux son graphe d'entropie.
+
+# DEUXIEME SCRIPT : classification.sh
+
+## Description
+
+Ce script permet de classifier des exécutables malveillants en 14 familles différentes.
+
+## Insctructions
+
+### Créer les représentations
+
+Ce script nécessite que le script représentations.sh fonctionne. Il faut donc installer les pré-requis du premier script.
+
+### Fonctionnement
+
+classification.sh ne permet de classifier qu'un seul exécutable à la fois. Il faut donc placer cet exécutable dans le dossier Fichiers_exécutables et vérifier qu'il n'y en a pas d'autres.
+
+### Le dossier Résultats
+
+Il faut supprimer le dossier API_Laura/Résultats : "rm -r Résultats" après chaque utilisation. Sauf si vous souhaitez observer les représentations et/ou les conserver.
+Néanmoins l'API ne fonctionnera bien que si le dossier est supprimé (ou vidé) avant chaque utilisation.
+
+### Rendre classification.sh exécutable
+
+chmod +x classification.sh
+
+
