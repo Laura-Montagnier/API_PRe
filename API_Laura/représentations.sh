@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Chemin vers le répertoire des exécutables
-dir_path="/home/laura/API_PRe/API_Laura/Fichiers_exécutables/"
+# Définir le chemin vers le répertoire des exécutables
+dir_path="home/laura/API_PRe/API_Laura/Fichiers_Exécutables"
 
 # Exécuter le(s) script(s) Python
 
 #Les Grayscales
 python3 représentation_grayscale.py "$dir_path"
+
+#Les couleurs
+
+python3 représentation_couleur.py "$dir_path"
 
 #Les Graphes d'entropie
 python3 représentation_graphe_entropie.py "$dir_path"
@@ -33,7 +37,7 @@ do
     ./pefeats "$filename" >> "$output_file"
 done
 
-cd .
+cd ..
 
 # Supprimer le répertoire intermédiaire
 rm -r ~/API_PRe/API_Laura/image_intermediaire

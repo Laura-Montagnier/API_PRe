@@ -24,7 +24,7 @@ train_ds, val_ds = keras.utils.image_dataset_from_directory(
     seed=1337,
     image_size=image_size,
     batch_size=batch_size,
-    color_mode='grayscale'  # Assurer que les images sont chargées en mode niveaux de gris
+    color_mode='rgb'  # Assurer que les images sont chargées en mode niveaux de gris
 )
 
 # Préchargement réduit
@@ -56,7 +56,7 @@ def make_model(input_shape, num_classes):
 
     return keras.Model(inputs, outputs)
 
-model = make_model(input_shape=image_size + (1,), num_classes=14)  # Ajuster input_shape pour les images en niveaux de gris
+model = make_model(input_shape=image_size + (3,), num_classes=14)  # Ajuster input_shape pour les images en niveaux de gris
 
 # Tracer le modèle
 #keras.utils.plot_model(model, show_shapes=True)
