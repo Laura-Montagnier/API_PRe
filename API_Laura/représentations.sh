@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Définir le chemin vers le répertoire des exécutables
-dir_path="./Fichiers_Exécutables"
+dir_path="./Fichiers_exécutables"
 
 # Exécuter le(s) script(s) Python
 
@@ -15,9 +15,11 @@ python3 représentation_couleur.py "$dir_path"
 #Les Graphes d'entropie
 python3 représentation_graphe_entropie.py "$dir_path"
 
+dir_path1=../Fichiers_exécutables
+
 #Les features Ember
 cd Pack_Ember
-python3 représentation_ember.py "$dir_path"
+python3 représentation_ember.py "$dir_path1"
 cd ..
 
 # Les features PE_feats
@@ -32,7 +34,7 @@ if [ ! -s "$output_file" ]; then
 fi
 
 # Exécuter pefeats pour chaque fichier dans le répertoire
-for filename in "$dir_path"/*
+for filename in "$dir_path1"/*
 do
     ./pefeats "$filename" >> "$output_file"
 done
@@ -40,6 +42,6 @@ done
 cd ..
 
 # Supprimer le répertoire intermédiaire
-rm -r ./image_intermediaire
+#rm -r ./image_intermediaire
 
 echo "Représentations créées."
