@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 import os
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix, classification_report
 
 
 file_path = "/mnt/c/Users/monta/Desktop/BODMAS2/Features_Ember.csv"
@@ -83,15 +83,29 @@ GB_model.fit(X_train, y_train)
 y_pred = GB_model.predict(X_test)
 y_pred1 = GB_model.predict(X_train)
 
-print(df_train)
-
 # Calcul de l'exactitude
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy:", accuracy)
 accuracy_2 = accuracy_score(y_train, y_pred1)
 print("Accuracy de train:", accuracy_2)
 
+# Calcul des métriques
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+roc_auc = roc_auc_score(y_test, GB_model.predict_proba(X_test), multi_class='ovo')
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+# Affichage des résultats
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+print("ROC AUC Score:", roc_auc)
+print("Confusion Matrix:\n", conf_matrix)
+print("Classification Report:\n", class_report)
+
 # Enregistrer le modèle avec pickle
 model_filename = 'GB_model_ember.pkl'
 with open(model_filename, 'wb') as file:
-        pickle.dump(GB_model, file)
+    pickle.dump(GB_model, file)
