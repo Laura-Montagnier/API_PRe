@@ -8,6 +8,12 @@ read seuil_de_confiance
 dir_path1="../Fichiers_exécutables"
 results_dir="../Résultats"
 
+# Vérifier si le répertoire est vide
+if [ -z "$(ls -A "$dir_path1")" ]; then
+  echo "Avertissement : Le répertoire $dir_path1 est vide."
+  exit 1
+fi
+
 ###PE_feats
 
 
