@@ -5,12 +5,13 @@ echo "Entrez le seuil de confiance désiré (entre 0 et 1):"
 read seuil_de_confiance
 
 # Définir le chemin vers le répertoire des exécutables
+dir_path0="./Fichiers_exécutables"
 dir_path1="../Fichiers_exécutables"
 results_dir="../Résultats"
 
 # Vérifier si le répertoire est vide
-if [ -z "$(ls -A "$dir_path1")" ]; then
-  echo "Avertissement : Le répertoire $dir_path1 est vide."
+if [ -z "$(ls -A "$dir_path0")" ]; then
+  echo "Avertissement : Le répertoire $dir_path0 est vide."
   exit 1
 fi
 
