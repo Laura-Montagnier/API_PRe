@@ -37,7 +37,8 @@ Les différents types de features sont présents dans le dossier "Résultats".
 ## Références
 
 Pour le Pack_EMBER : https://github.com/elastic/ember
-Pour PE_Feats : Charles-Henry Bertrand van Ouytsel et al.
+
+Pour PE_Feats : https://github.com/packing-box/awesome-executable-packing.
 
 # APARTE : Comment les représentations sont-elles fabriquées ?
 
@@ -102,7 +103,28 @@ On calcule la fréquence de chaque valeur de byte. Ainsi, on peut calculer l'ent
 
 Le script utilisé est représentation_graphe_entropie.py. Il prend en argument un dossier d'exécutables et trace pour chacun d'entre eux son graphe d'entropie.
 
-# DEUXIEME SCRIPT : classification.sh
+# DEUXIEME SCRIPT : détection.sh
+
+## Description
+
+Ce script permet de déterminer si un fichier exécutable PE est un Cleanware ou un Malware.
+
+## Insctructions
+
+### Créer les représentations
+
+Ce script nécessite que le script représentations.sh fonctionne. Il faut donc installer les pré-requis du premier script.
+
+### Fonctionnement
+
+détection.sh ne permet de classifier qu'un seul exécutable à la fois. Il faut donc placer cet exécutable dans le dossier Fichiers_exécutables et vérifier qu'il n'y en a pas d'autres.
+
+### Le dossier Résultats
+
+Il faut supprimer le dossier API_Laura/Résultats : "rm -r Résultats" après chaque utilisation. Sauf si vous souhaitez observer les représentations et/ou les conserver.
+Néanmoins l'API ne fonctionnera bien que si le dossier est supprimé (ou vidé) avant chaque utilisation.
+
+# TROISIEME SCRIPT : classification.sh
 
 ## Description
 
