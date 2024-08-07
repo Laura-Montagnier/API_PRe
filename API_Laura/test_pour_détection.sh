@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Demande à l'utilisateur de saisir une variable
-echo "Entrez le seuil de confiance désiré (entre 0 et 1):"
-read seuil_de_confiance
+seuil_de_confiance=0.98
 
 # Définir le chemin vers le répertoire des exécutables
 dir_path0="./Fichiers_exécutables"
@@ -11,7 +9,7 @@ results_dir="../Résultats"
 
 # Vérifier si le répertoire est vide
 if [ -z "$(ls -A "$dir_path0")" ]; then
-  echo "Avertissement : Le répertoire $dir_path0 est vide."
+  #echo "Avertissement : Le répertoire $dir_path0 est vide."
   exit 1
 fi
 
@@ -74,27 +72,30 @@ features_pe_feats = features_pe_feats.iloc[:, 1:]
 new_column_names = [f'F{i+1}' for i in range(num_features-1)]
 features_pe_feats.columns = new_column_names
 
-print("Selon PE_feats, la classe prédite est :")
+#print("Selon PE_feats, la classe prédite est :")
 # Faire des prédictions avec le modèle chargé
 predictions = GB_model_pe_feats.predict(features_pe_feats)
 
 Labels=['Cleanware','Malware']
 
 # Afficher les prédictions
-print(Labels[predictions[0]])
+#print(Labels[predictions[0]])
 
 # Afficher un message avant de faire les prédictions
-print("Selon PE_feats, la probabilité de prédiction est :")
+#print("Selon PE_feats, la probabilité de prédiction est :")
 
 # Faire des prédictions avec les probabilités
 predictions_proba = GB_model_pe_feats.predict_proba(features_pe_feats)
 
 u = max(predictions_proba[0][0],predictions_proba[0][1])
-print(u)
+#print(u)
 
 ma_variable=str(u)
+ma_variable_1=str(Labels[predictions[0]])
 with open('mon_fichier.txt', 'w') as f:
 	f.write(ma_variable)
+with open('mon_fichier_1.txt', 'w') as f:
+    f.write(ma_variable_1)
 
 END
 
@@ -105,24 +106,28 @@ end_time=$(date +%s)
 execution_time=$((end_time - start_time))
 
 # Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour PE_feats."
+#echo "Le script a pris $execution_time secondes pour PE_feats."
 
 valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
 
 # Convertir la valeur en nombre à virgule flottante
 valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
 
 
 if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    echo "La représentation PE_feats est suffisante."
+    #echo "La représentation PE_feats est suffisante."
     rm mon_fichier.txt
+    rm mon_fichier_1.txt
+    echo "$valeur_recuperee_1,PE_feats"
     exit 0
 fi
 
 
 rm mon_fichier.txt
+rm mon_fichier_1.txt
 
-echo "Les prédictions avec les pe_feats n'étaient pas suffisantes."
+#echo "Les prédictions avec les pe_feats n'étaient pas suffisantes."
 
 
 ###EMBER
@@ -167,7 +172,7 @@ features_ember = features_ember.iloc[:, 1:]
 new_column_names = [f'F{i+1}' for i in range(num_features-1)]
 features_ember.columns = new_column_names
 
-print("Selon Ember, la classe prédite est :")
+#print("Selon Ember, la classe prédite est :")
 
 # Faire des prédictions avec le modèle chargé
 predictions = GB_model_ember.predict(features_ember)
@@ -175,20 +180,23 @@ predictions = GB_model_ember.predict(features_ember)
 Labels=['Cleanware','Malware']
 
 # Afficher les prédictions
-print(Labels[predictions[0]])
+#print(Labels[predictions[0]])
 
 # Afficher un message avant de faire les prédictions
-print("Selon Ember, la probabilité de prédiction est :")
+#print("Selon Ember, la probabilité de prédiction est :")
 
 # Faire des prédictions avec les probabilités
 predictions_proba = GB_model_ember.predict_proba(features_ember)
 
 u = max(predictions_proba[0][0],predictions_proba[0][1])
-print(u)
+#print(u)
 
 ma_variable=str(u)
+ma_variable_1=str(Labels[predictions[0]])
 with open('mon_fichier.txt', 'w') as f:
 	f.write(ma_variable)
+with open('mon_fichier_1.txt', 'w') as f:
+    f.write(ma_variable_1)
 
 END
 
@@ -199,23 +207,27 @@ end_time=$(date +%s)
 execution_time=$((end_time - start_time))
 
 # Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour Ember."
+#echo "Le script a pris $execution_time secondes pour Ember."
 
 valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
 
 # Convertir la valeur en nombre à virgule flottante
 valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
 
 if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    echo "La représentation Ember est suffisante."
+    #echo "La représentation Ember est suffisante."
+    echo "valeur_recuperee_1,Ember"
     rm mon_fichier.txt
+    rm mon_fichier_1.txt
     exit 0
 fi
 
 
 rm mon_fichier.txt
+rm mon_fichier_1.txt
 
-echo "Les prédictions avec Ember n'étaient pas suffisantes."
+#echo "Les prédictions avec Ember n'étaient pas suffisantes."
 
 
 
@@ -251,13 +263,13 @@ def preprocess_image(img_path, image_size):
         img_array /= 255.0  # Normaliser l'image
         return img_array
     except Exception as e:
-        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        #print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
         return None
 
 try:
     model = tf.keras.models.load_model(model_path)
 except Exception as e:
-    print(f"Erreur lors du chargement du modèle: {e}")
+    #print(f"Erreur lors du chargement du modèle: {e}")
     exit(1)
 
 dir_path = './Résultats/grayscale'
@@ -277,22 +289,25 @@ try:
                     probabilities = predictions[0]
                     
                     
-                    print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
-                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
+                    #print(f"Classe prédite avec la représentation en Grayscale : {Labels[predicted_class[0]]}")
+                    #print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
                     ma_variable = str(max(probabilities))
+                    ma_variable_1 = str(Labels[predicted_class[0]])
 		
                     with open('mon_fichier.txt', 'w') as f:
                         f.write(ma_variable)
+                    with open('mon_fichier_1.txt, 'w') as f:
+                        f.write(ma_variable_1)
 
                 except Exception as e:
-                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+                    #print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
 
             else:
-                print(f"Erreur lors du prétraitement de l'image {filename}")
+                #print(f"Erreur lors du prétraitement de l'image {filename}")
 
 except Exception as e:
-    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+    #print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
 END
 
 # Arrête de mesurer le temps
@@ -301,25 +316,27 @@ end_time=$(date +%s)
 # Calcule la durée d'exécution
 execution_time=$((end_time - start_time))
 
-# Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour les Grayscales."
 
 valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
 
 # Convertir la valeur en nombre à virgule flottante
 valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
 
 
 if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    echo "La représentation en Grayscale est suffisante."
+    #echo "La représentation en Grayscale est suffisante."
+    echo "valeur_recuperee_1,Grayscale"
     rm mon_fichier.txt
+    rm mon_fichier_1.txt
     exit 0
 fi
 
 rm mon_fichier.txt
+rm mon_fichier_1.txt
 
 
-echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
+#echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 
 
 ###IMAGES EN COULEUR
@@ -354,13 +371,13 @@ def preprocess_image(img_path, image_size):
         img_array /= 255.0  # Normaliser l'image
         return img_array
     except Exception as e:
-        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        #print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
         return None
 
 try:
     model = tf.keras.models.load_model(model_path)
 except Exception as e:
-    print(f"Erreur lors du chargement du modèle: {e}")
+    #print(f"Erreur lors du chargement du modèle: {e}")
     exit(1)
 
 dir_path = './Résultats/couleur'
@@ -380,22 +397,25 @@ try:
                     probabilities = predictions[0]
                     
                     
-                    print(f"Classe prédite avec la représentation en couleur : {Labels[predicted_class[0]]}")
-                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
+                    #print(f"Classe prédite avec la représentation en couleur : {Labels[predicted_class[0]]}")
+                    #print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
                     ma_variable = str(max(probabilities))
+                    ma_variable_1 = str(Labels[predicted_class[0]])
 		
                     with open('mon_fichier.txt', 'w') as f:
                         f.write(ma_variable)
+                    with open('mon_fichier_1.txt, 'w') as f:
+                        f.write(ma_variable_1)
 
                 except Exception as e:
-                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+                    #print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
 
             else:
-                print(f"Erreur lors du prétraitement de l'image {filename}")
+                #print(f"Erreur lors du prétraitement de l'image {filename}")
 
 except Exception as e:
-    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+    #print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
 END
 
 # Arrête de mesurer le temps
@@ -404,25 +424,28 @@ end_time=$(date +%s)
 # Calcule la durée d'exécution
 execution_time=$((end_time - start_time))
 
-# Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour les images en couleur."
 
 valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
 
 # Convertir la valeur en nombre à virgule flottante
 valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
 
 
 if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    echo "La représentation en couleur est suffisante."
+    #echo "La représentation en Grayscale est suffisante."
+    echo "valeur_recuperee_1,Couleur"
     rm mon_fichier.txt
+    rm mon_fichier_1.txt
     exit 0
 fi
 
 rm mon_fichier.txt
+rm mon_fichier_1.txt
 
 
-echo "Les prédictions avec les couleurs n'étaient pas suffisantes."
+
+#echo "Les prédictions avec les couleurs n'étaient pas suffisantes."
 
 
 
@@ -457,13 +480,13 @@ def preprocess_image(img_path, image_size):
         img_array /= 255.0  # Normaliser l'image
         return img_array
     except Exception as e:
-        print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
+        #print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
         return None
 
 try:
     model = tf.keras.models.load_model('./../Modèles/entropie_model_détection.h5')
 except Exception as e:
-    print(f"Erreur lors du chargement du modèle: {e}")
+    #print(f"Erreur lors du chargement du modèle: {e}")
     exit(1)
 
 dir_path = './Résultats/graphe_entropie'
@@ -483,20 +506,23 @@ try:
                     probabilities = predictions[0]
                     
                     
-                    print(f"Classe prédite avec la représentation en Graphe d'entropie : {Labels[predicted_class[0]]}")
-                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
+                    #print(f"Classe prédite avec la représentation en Graphe d'entropie : {Labels[predicted_class[0]]}")
+                    #print(f"Probabilité de cette prédiction : {max(probabilities)}")
 
                     ma_variable = str(max(probabilities))
+                    ma_variable_1 = str(Labels[predicted_class[0]])
 		
                     with open('mon_fichier.txt', 'w') as f:
                         f.write(ma_variable)
+                    with open('mon_fichier_1.txt', 'w') as f:
+                        f.write(ma_variable_1)
 
                 except Exception as e:
-                    print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
+                    #print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
             else:
-                print(f"Erreur lors du prétraitement de l'image {filename}")
+                #print(f"Erreur lors du prétraitement de l'image {filename}")
 except Exception as e:
-    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+    #print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
 
 
 
@@ -509,20 +535,24 @@ end_time=$(date +%s)
 execution_time=$((end_time - start_time))
 
 # Affiche le temps d'exécution
-echo "Le script a pris $execution_time secondes pour les Graphes d'entropie."
+#echo "Le script a pris $execution_time secondes pour les Graphes d'entropie."
 
 valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
 
 # Convertir la valeur en nombre à virgule flottante
 valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
 
-if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    echo "La représentation en Graphe d'entropie est suffisante."
-    rm mon_fichier.txt
-    exit 0
-fi
+#if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
+    #echo "La représentation en Graphe d'entropie est suffisante."
+    #rm mon_fichier.txt
+    #exit 0
+#fi
 
 rm mon_fichier.txt
+rm mon_fichier_1.txt
 
-echo "Les prédictions avec le graphe d'entropie n'étaient pas suffisantes."
+echo "valeur_recuperee_1,Entropie"
+
+#echo "Les prédictions avec le graphe d'entropie n'étaient pas suffisantes."
 
