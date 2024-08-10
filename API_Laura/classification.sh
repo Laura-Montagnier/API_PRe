@@ -259,7 +259,7 @@ try:
             img_array = preprocess_image(img_path, image_size)
             if img_array is not None:
                 try:
-                    predictions = model.predict(img_array)
+                    predictions = model.predict(img_array, verbose=0)
                     predicted_class = np.argmax(predictions, axis=1)
                     probabilities = predictions[0]
                     
@@ -362,7 +362,7 @@ try:
             img_array = preprocess_image(img_path, image_size)
             if img_array is not None:
                 try:
-                    predictions = model.predict(img_array)
+                    predictions = model.predict(img_array, verbose=0)
                     predicted_class = np.argmax(predictions, axis=1)
                     probabilities = predictions[0]
                     
@@ -465,7 +465,7 @@ try:
             img_array = preprocess_image(img_path, image_size)
             if img_array is not None:
                 try:
-                    predictions = model.predict(img_array)
+                    predictions = model.predict(img_array, verbose=0)
                     predicted_class = np.argmax(predictions, axis=1)
                     probabilities = predictions[0]
                     

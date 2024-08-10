@@ -61,7 +61,7 @@ model = make_model(input_shape=image_size + (1,), num_classes=14)  # Ajuster inp
 # Tracer le modèle
 #keras.utils.plot_model(model, show_shapes=True)
 
-epochs = 5
+epochs = 15
 
 callbacks = [
     keras.callbacks.ModelCheckpoint("save_at_{epoch}.keras"),
