@@ -1,6 +1,6 @@
 #!/bin/bash
 
-seuil_de_confiance=0.98
+seuil_de_confiance=0.85
 
 # Définir le chemin vers le répertoire des exécutables
 dir_path0="./Fichiers_exécutables"
@@ -232,105 +232,6 @@ rm mon_fichier_1.txt
 
 
 
-###GRAYSCALE
-
-# Définir le chemin vers le répertoire des exécutables
-dir_path2="./Fichiers_exécutables"
-
-# Commence à mesurer le temps pour les Grayscales
-start_time=$(date +%s)
-
-# Exécuter le script Python pour les Grayscales avec le chemin en argument
-python3 représentation_grayscale.py "$dir_path2"
-
-python3 << END
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
-
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-import numpy as np
-
-model_path = './../Modèles/grayscale_model.h5'
-
-def preprocess_image(img_path, image_size):
-    try:
-        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
-        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
-        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
-        img_array /= 255.0  # Normaliser l'image
-        return img_array
-    except:
-        return None
-
-try:
-    model = tf.keras.models.load_model(model_path)
-except:
-    exit()
-
-# Définir les labels (à adapter selon votre modèle)
-Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
-
-dir_path = './Résultats/grayscale'
-image_size = (180, 180)
-
-try:
-    for filename in os.listdir(dir_path):
-        if filename.endswith(".jpg") or filename.endswith(".png"):
-            img_path = os.path.join(dir_path, filename)
-            
-            img_array = preprocess_image(img_path, image_size)
-            if img_array is not None:
-                try:
-                    predictions = model.predict(img_array, verbose=0)
-                    predicted_class = np.argmax(predictions, axis=1)
-                    probabilities = predictions[0]
-                    
-                    ma_variable = str(max(probabilities))
-                    ma_variable_1 = str(Labels[predicted_class[0]])
-                    
-                    with open('mon_fichier.txt', 'w') as f:
-                        f.write(ma_variable)
-                    with open('mon_fichier_1.txt', 'w') as f:
-                        f.write(ma_variable_1)
-
-                except:
-                    pass
-except:
-    pass
-
-END
-
-# Arrête de mesurer le temps
-end_time=$(date +%s)
-
-# Calcule la durée d'exécution
-execution_time=$((end_time - start_time))
-
-
-valeur_recuperee=$(< mon_fichier.txt)
-valeur_recuperee_1=$(< mon_fichier_1.txt)
-
-# Convertir la valeur en nombre à virgule flottante
-valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
-
-
-if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
-    #echo "La représentation en Grayscale est suffisante."
-    echo "$valeur_recuperee_1,Grayscale"
-    rm mon_fichier.txt
-    rm mon_fichier_1.txt
-    exit 0
-fi
-
-rm mon_fichier.txt
-rm mon_fichier_1.txt
-
-
-#echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
-
-
 ###IMAGES EN COULEUR
 
 # Définir le chemin vers le répertoire des exécutables
@@ -431,6 +332,105 @@ rm mon_fichier_1.txt
 
 #echo "Les prédictions avec les couleurs n'étaient pas suffisantes."
 
+
+
+###GRAYSCALE
+
+# Définir le chemin vers le répertoire des exécutables
+dir_path2="./Fichiers_exécutables"
+
+# Commence à mesurer le temps pour les Grayscales
+start_time=$(date +%s)
+
+# Exécuter le script Python pour les Grayscales avec le chemin en argument
+python3 représentation_grayscale.py "$dir_path2"
+
+python3 << END
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
+
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+model_path = './../Modèles/grayscale_model.h5'
+
+def preprocess_image(img_path, image_size):
+    try:
+        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
+        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
+        img_array /= 255.0  # Normaliser l'image
+        return img_array
+    except:
+        return None
+
+try:
+    model = tf.keras.models.load_model(model_path)
+except:
+    exit()
+
+# Définir les labels (à adapter selon votre modèle)
+Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
+
+dir_path = './Résultats/grayscale'
+image_size = (180, 180)
+
+try:
+    for filename in os.listdir(dir_path):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
+            img_path = os.path.join(dir_path, filename)
+            
+            img_array = preprocess_image(img_path, image_size)
+            if img_array is not None:
+                try:
+                    predictions = model.predict(img_array, verbose=0)
+                    predicted_class = np.argmax(predictions, axis=1)
+                    probabilities = predictions[0]
+                    
+                    ma_variable = str(max(probabilities))
+                    ma_variable_1 = str(Labels[predicted_class[0]])
+                    
+                    with open('mon_fichier.txt', 'w') as f:
+                        f.write(ma_variable)
+                    with open('mon_fichier_1.txt', 'w') as f:
+                        f.write(ma_variable_1)
+
+                except:
+                    pass
+except:
+    pass
+
+END
+
+# Arrête de mesurer le temps
+end_time=$(date +%s)
+
+# Calcule la durée d'exécution
+execution_time=$((end_time - start_time))
+
+
+valeur_recuperee=$(< mon_fichier.txt)
+valeur_recuperee_1=$(< mon_fichier_1.txt)
+
+# Convertir la valeur en nombre à virgule flottante
+valeur_recuperee_float=$(printf "%.5f" "$valeur_recuperee")
+
+
+if [ 1 -eq "$(echo "$valeur_recuperee_float >= $seuil_de_confiance" | bc)" ]; then
+    #echo "La représentation en Grayscale est suffisante."
+    echo "$valeur_recuperee_1,Grayscale"
+    rm mon_fichier.txt
+    rm mon_fichier_1.txt
+    exit 0
+fi
+
+rm mon_fichier.txt
+rm mon_fichier_1.txt
+
+
+#echo "Les prédictions avec les grayscales n'étaient pas suffisantes."
 
 
 
