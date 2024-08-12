@@ -4,7 +4,7 @@
 dossier_source="./../../bodmas1_samples"
 dossier_destination="Fichiers_exécutables"
 script_detection="./test_pour_détection.sh"
-fichier_csv="Détection.csv"
+fichier_csv="Classification.csv"
 
 # Créer le dossier destination s'il n'existe pas
 mkdir -p "$dossier_destination"

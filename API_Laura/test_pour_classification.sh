@@ -1,6 +1,6 @@
 #!/bin/bash
 
-seuil_de_confiance=0.85
+seuil_de_confiance=0.75
 
 # Définir le chemin vers le répertoire des exécutables
 dir_path0="./Fichiers_exécutables"
@@ -261,6 +261,7 @@ def preprocess_image(img_path, image_size):
     try:
         img = image.load_img(img_path, target_size=image_size, color_mode='rgb')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.repeat(img_array, 3, axis=-1)  # Shape will be (128, 128, 3)
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
         return img_array
@@ -365,6 +366,7 @@ def preprocess_image(img_path, image_size):
     try:
         img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.repeat(img_array, 3, axis=-1)  # Shape will be (128, 128, 3)
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
         return img_array
@@ -466,6 +468,7 @@ def preprocess_image(img_path, image_size):
     try:
         img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        img_array = np.repeat(img_array, 3, axis=-1)  # Shape will be (128, 128, 3)
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
         return img_array
