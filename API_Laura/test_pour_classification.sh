@@ -252,12 +252,14 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-model_path='./../Modèles/couleur_model.h5'
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
 
+model_path = './../Modèles/couleur_model.h5'
 
 def preprocess_image(img_path, image_size):
     try:
-        img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
+        img = image.load_img(img_path, target_size=image_size, color_mode='rgb')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
@@ -273,8 +275,8 @@ except:
 # Définir les labels (à adapter selon votre modèle)
 Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
 
-dir_path = './Résultats/couleur'
-image_size = (180, 180)
+dir_path = './Résultats/grayscale'
+image_size = (128, 128)
 
 try:
     for filename in os.listdir(dir_path):
@@ -354,6 +356,9 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
+
 model_path = './../Modèles/grayscale_model.h5'
 
 def preprocess_image(img_path, image_size):
@@ -375,7 +380,7 @@ except:
 Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
 
 dir_path = './Résultats/grayscale'
-image_size = (180, 180)
+image_size = (128, 128)
 
 try:
     for filename in os.listdir(dir_path):
@@ -452,6 +457,9 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
+
 Labels = ['benjamin', 'berbew', 'ceeinject', 'dinwod', 'ganelp', 'gepys', 'mira', 'sfone', 'sillyp2p', 'upatre', 'wabot', 'wacatac', 'musecador']
 
 def preprocess_image(img_path, image_size):
@@ -470,7 +478,7 @@ except:
     pass  # Silencieux
 
 dir_path = './Résultats/graphe_entropie'
-image_size = (180, 180)
+image_size = (128, 128)
 
 try:
     for filename in os.listdir(dir_path):

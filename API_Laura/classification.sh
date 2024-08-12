@@ -219,38 +219,45 @@ python3 représentation_couleur.py "$dir_path2"
 
 python3 << END
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
-
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 
-model_path='./../Modèles/couleur_model.h5'
+# Suppression des messages d'information de TensorFlow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-Labels = ['benjamin','berbew','ceeinject','dinwod','ganelp','gepys','mira','sfone','sillyp2p','upatre','wabot','wacatac','musecador']
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
+
+
+# Chemin vers le modèle et le dossier d'images
+model_path = './../Modèles/couleur_model.h5'
+dir_path = './Résultats/couleur'
+image_size = (128, 128)  # Taille des images attendues par le modèle
+
+# Charger le modèle
+try:
+    model = tf.keras.models.load_model(model_path)
+except Exception as e:
+    print(f"Erreur lors du chargement du modèle: {e}")
+    exit()
+
+# Définir les labels
+Labels = ['benjamin', 'berbew', 'ceeinject', 'dinwod', 'ganelp', 'gepys', 'mira', 'sfone', 'sillyp2p', 'upatre', 'wabot', 'wacatac', 'musecador']
 
 def preprocess_image(img_path, image_size):
     try:
-        img = image.load_img(img_path, target_size=image_size, color_mode='rgb')
-        img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
-        img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
-        img_array /= 255.0  # Normaliser l'image
+        # Charger et prétraiter l'image
+        img = load_img(img_path, target_size=image_size)
+        img_array = img_to_array(img)
+        img_array = img_array / 255.0  # Normaliser les pixels de l'image
+        img_array = np.expand_dims(img_array, axis=0)  # Ajouter la dimension de lot
         return img_array
     except Exception as e:
         print(f"Erreur lors du prétraitement de l'image {img_path}: {e}")
         return None
 
-try:
-    model = tf.keras.models.load_model(model_path)
-except Exception as e:
-    print(f"Erreur lors du chargement du modèle: {e}")
-    exit(1)
-
-dir_path = './Résultats/couleur'
-image_size = (180, 180)
-
-
+# Parcourir les images dans le dossier
 try:
     for filename in os.listdir(dir_path):
         if filename.endswith(".jpg") or filename.endswith(".png"):
@@ -259,27 +266,28 @@ try:
             img_array = preprocess_image(img_path, image_size)
             if img_array is not None:
                 try:
+                    # Prédire la classe
                     predictions = model.predict(img_array, verbose=0)
                     predicted_class = np.argmax(predictions, axis=1)
-                    probabilities = predictions[0]
+                    probabilities = np.max(predictions)
                     
-                    
-                    print(f"Classe prédite avec la représentation en couleur : {Labels[predicted_class[0]]}")
-                    print(f"Probabilité de cette prédiction : {max(probabilities)}")
+                    # Écrire les résultats dans les fichiers
+                    ma_variable = str(probabilities)
+                    ma_variable_1 = str(Labels[predicted_class[0]])
 
-                    ma_variable = str(max(probabilities))
-		
+                    print(f"Classe prédite avec la représentation en couleur : {Labels[predicted_class[0]]}")
+                    print(f"Probabilité de cette prédiction : {probabilities}")
+                    
                     with open('mon_fichier.txt', 'w') as f:
                         f.write(ma_variable)
+                    with open('mon_fichier_1.txt', 'w') as f:
+                        f.write(ma_variable_1)
 
                 except Exception as e:
                     print(f"Erreur lors de la prédiction pour l'image {filename}: {e}")
-
-            else:
-                print(f"Erreur lors du prétraitement de l'image {filename}")
-
 except Exception as e:
-    print(f"Erreur lors de l'itération sur les fichiers du répertoire: {e}")
+    print(f"Erreur lors du traitement des images: {e}")
+
 END
 
 # Arrête de mesurer le temps
@@ -325,6 +333,9 @@ python3 << END
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
 
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
+
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -338,6 +349,9 @@ def preprocess_image(img_path, image_size):
     try:
         img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        # Convertir en RGB en répétant le canal unique trois fois
+        img_array = np.repeat(img_array, 3, axis=-1)  # Shape will be (128, 128, 3)
+
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
         return img_array
@@ -352,7 +366,7 @@ except Exception as e:
     exit(1)
 
 dir_path = './Résultats/grayscale'
-image_size = (180, 180)
+image_size = (128, 128)
 
 
 try:
@@ -429,6 +443,9 @@ python3 << END
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Ignorer les avertissements et informations, ne montrer que les erreurs
 
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
+
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -442,6 +459,8 @@ def preprocess_image(img_path, image_size):
     try:
         img = image.load_img(img_path, target_size=image_size, color_mode='grayscale')
         img_array = image.img_to_array(img)  # Convertir l'image en tableau numpy
+        # Convertir en RGB en répétant le canal unique trois fois
+        img_array = np.repeat(img_array, 3, axis=-1)  # Shape will be (128, 128, 3)
         img_array = np.expand_dims(img_array, 0)  # Ajouter une dimension batch
         img_array /= 255.0  # Normaliser l'image
         return img_array
@@ -456,7 +475,7 @@ except Exception as e:
     exit(1)
 
 dir_path = './Résultats/graphe_entropie'
-image_size = (180, 180)
+image_size = (128, 128)
 
 
 try:
