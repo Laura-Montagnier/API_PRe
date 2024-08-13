@@ -3,7 +3,7 @@
 # Définir les dossiers
 dossier_source="./../../bodmas1_samples"
 dossier_destination="Fichiers_exécutables"
-script_detection="./test_pour_détection.sh"
+script_detection="./test_pour_classification.sh"
 fichier_csv="Classification.csv"
 
 # Créer le dossier destination s'il n'existe pas
@@ -31,6 +31,7 @@ find "$dossier_source" -type f | while read -r fichier; do
 
     # Supprimer le fichier copié pour éviter des conflits
     rm "$dossier_destination/$nom_fichier"
+    rm -r Résultats
 done
 
 echo "Traitement terminé. Les résultats sont dans $fichier_csv."
