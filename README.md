@@ -149,4 +149,28 @@ Néanmoins l'API ne fonctionnera bien que si le dossier est supprimé (ou vidé)
 
 chmod +x classification.sh
 
+# LES SCRIPTS DE TEST
+
+Vous pouvez modifier test_pipeline.sh pour prendre en argument un dossier plein d'exécutables, et tester ainsi l'API pour la détection (script test_pour_détection.sh) ou la classification (script test_pour_classification.sh). Ces deux scripts sont presque similaires à détection.sh et classification.sh, sauf qu'ils sortent uniquement la prédiction et le nom du modèle ayant fait la prédiction.
+
+Vous devez donner en argument un dossier dont les sous-dossiers portent le nom des familles.
+
+# FAMILLES
+
+Les familles reconnues par les scripts sont les 14 familles suivantes :
+
+-benjamin
+-berbew
+-dinwod
+-gepys
+-ganelp
+-upatre
+-wacatac
+-wabot
+-sillyp2p
+-small
+-mira
+-musecador
+-ceeinject
+-sfone
 
